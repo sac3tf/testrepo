@@ -1,0 +1,73 @@
+---
+title: "SCocke_HW4"
+author: "Steven Cocke"
+date: "June 4, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1
+
+### a. Install the fivethirtyeight package
+```{r fivethirtyeight}
+install.packages("fivethirtyeight", repos = "https://github.com/fivethirtyeight/data")
+
+library(fivethirtyeight)
+```
+### b. In the listing Data sets in package 'fivethirtyeight,' assign the eighteenth data set to an object 'df'.
+```{r fivethirtyeight1}
+df <- data.frame(college_all_ages)
+```
+### c. Use a more detailed list of the data sets to write out the URL in a comment to the related news story.
+```{r fivethirtyeight2}
+vignette("fivethirtyeight", package = "fivethirtyeight")
+#http://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/
+#The Economic Guide To Picking A College Major
+```
+### d. Using R command(s), give the dimensions and column names of this data frame.
+```{r fivethirtyeight3}
+dim(df)
+colnames(df)
+```
+
+##Question 2
+
+### a. Write an R command that gives you the column names of the data frame.  Right after that, write one that counts the number of columns but not rows.  Hint: The number should match one of your numbers in Question 1d for dimensions.
+```{r fivethirtyeight4}
+dim(df)
+dimensions <- dim(df)
+dimensions[2]
+```
+
+### b. Generate a count of each unique major_category in the data frame.  I recommend using libraries to help.  I have demonstrated one briefly in live-session.  To be clear, this should look like a matrix or data frame containing the major_category and the frequency it occurs in the dataset.  Assign it to major_count.
+
+```{r fivethirtyeight5}
+major_count <- table(df$major_category)
+```
+
+### c. To make things easier to read, put par(las=2) before your plot to make the text perpendicular to the axis.  Make a barplot of major_count.  Make sure to label the title with something informative (check the vignette if you need), label the x and y axis, and make it any color other than grey.  Assign the major_category labels to their respective bar.  Flip the barplot horizontally so that bars extend to the right, not upward.  All of these options can be done in a single pass of barplot(). Note: It’s okay if it’s wider than the preview pane.
+```{r fivethirtyeight6}
+par(las=2)
+barplot(major_count, col="blue", main="Economic Guide to Picking a Major",horiz = TRUE, xlab="Counts", ylab="Majors")
+```
+
+
+### d. Write the fivethirtyeight data to a csv file.  Make sure that it does not have row labels.
+```{r fivethirtyeight7}
+##This questions was very ambigious. Not sure what part of the fivethirtyeight data I was supposed to write
+write.csv(major_count, file = "major_count.csv")
+```
+
+##Question 3
+
+### a. Start a new repository on GitHub for your SMU MSDS homework.  On your local device, make sure there is a directory for Homework at the minimum; you are welcome to add whatever you would like to this repo in addition to your requirements here.
+
+### b. Create a README.md file which explains the purpose of the repository, the topics included, the sources for the material you post, and contact information in case of questions. Remember, the one in the root directory should be general.  You are welcome to make short READMEs for each assignment individually in other folders.
+
+### c. In one (or more) of the nested directories, post your RMarkdown script, HTML file, and data from ‘fivethirtyeight.’  Make sure that in your README or elsewhere that you credit fivethirtyeight in some way.
+
+### d. In your RMarkdown script, please provide the link to this GitHub so the grader can see it.
+https://github.com/sac3tf/SMU-MSDS-HW/tree/master/MSDS%20Doing%20Data%20Science
