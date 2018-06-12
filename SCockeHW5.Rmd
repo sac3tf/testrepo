@@ -1,0 +1,119 @@
+---
+title: "SCocke_HW5"
+author: "Steven Cocke"
+date: "June 11, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Problem 1
+
+
+### 1.	Data Munging (30 points): Utilize yob2016.txt for this question. This file is a series of popular children’s names born in the year 2016 in the United States.  It consists of three columns with a first name, a gender, and the amount of children given that name.  However, the data is raw and will need cleaning to make it tidy and usable.
+
+
+#### a.	First, import the .txt file into R so you can process it.  Keep in mind this is not a CSV file.  You might have to open the file to see what you’re dealing with.  Assign the resulting data frame to an object, df, that consists of three columns with human-readable column names for each.
+
+```{r names}
+##Read in the data
+df <- data.frame(read.delim("/Users/stevencocke/Downloads/Download-22/yob2016 (1).txt", sep=";", header = FALSE))
+
+##Assign column names
+names(df) <- c("Name", "Gender", "NumberofChildren")
+```
+
+#### b.	Display the summary and structure of df
+```{r names1}
+##Summary
+summary(df)
+
+##Structure
+str(df)
+```
+
+#### c.	Your client tells you that there is a problem with the raw file.  One name was entered twice and misspelled.  The client cannot remember which name it is; there are thousands he saw! But he did mention he accidentally put three y’s at the end of the name.  Write an R command to figure out which name it is and display it.
+```{r names2}
+##Find which name ends in yyy
+grep("yyy$",df$Name)
+
+##Display that name
+df[212,]
+```
+
+#### d.	Upon finding the misspelled name, please remove this particular observation, as the client says it’s redundant.  Save the remaining dataset as an object: y2016 
+```{r names3}
+##Remove that observation
+y2016 <- df[-212,]
+
+##Prove that it is no longer there
+grep("yyy$", y2016$Name)
+```
+
+
+##Problem 2
+
+### 2.	Data Merging (30 points): Utilize yob2015.txt for this question.  This file is similar to yob2016, but contains names, gender, and total children given that name for the year 2015.
+
+### a.	Like 1a, please import the .txt file into R.  Look at the file before you do.  You might have to change some options to import it properly.  Again, please give the dataframe human-readable column names.  Assign the dataframe to y2015.  
+```{r names4}
+##Read in the data
+y2015 <- data.frame(read.delim("/Users/stevencocke/Downloads/Download-22/yob2015 (1).txt", sep=",", header = FALSE))
+
+##Assign column names
+names(y2015) <- c("Name", "Gender", "NumberofChildren")
+```
+
+### b.	Display the last ten rows in the dataframe.  Describe something you find interesting about these 10 rows.
+```{r names5}
+##The bottom 10 Names all appear 5 times in 2015, and the last two Zyrus and Zyus could be a mispelling
+tail(y2015, 10)
+```
+
+### c.	Merge y2016 and y2015 by your Name column; assign it to final.  The client only cares about names that have data for both 2016 and 2015; there should be no NA values in either of your amount of children rows after merging.
+```{r names6}
+##Merge the two files and remove NA's
+final <- merge(y2016,y2015,by="Name", na.rm=TRUE)
+```
+
+
+##Problem 3
+
+### 3.	Data Summary (30 points): Utilize your data frame object final for this part.
+
+### a.	Create a new column called “Total” in final that adds the amount of children in 2015 and 2016 together.  In those two years combined, how many people were given popular names?
+```{r names7}
+##Create a Total variable that sums up the number of children in both years
+Total <- final$NumberofChildren.x + final$NumberofChildren.y
+##Add this column to the merged dataset
+final <- cbind(final, Total)
+```
+### b.	Sort the data by Total.  What are the top 10 most popular names?
+```{r names8}
+##Order the dataset by greatest total to least
+final <- final[order(-Total),]
+##Display the top 10
+head(final,10)
+```
+### c.	The client is expecting a girl!  Omit boys and give the top 10 most popular girl’s names.
+```{r names9}
+##Omit boys and display the top 10 again
+head(final[!(final$Gender.x=="M" & final$Gender.y=="M"),],10)
+```
+### d.	Write these top 10 girl names and their Totals to a CSV file.  Leave out the other columns entirely.
+```{r names10}
+##Assign the 10 girls to a variable
+top10girls <- head(final[!(final$Gender.x=="M" & final$Gender.y=="M"),],10)
+##Remove unwanted columns
+top10girls <- subset(top10girls, select = -c(Gender.y, Gender.x, NumberofChildren.x, NumberofChildren.y))
+##Write to a csv
+write.csv(top10girls, 'top10girls.csv',row.names = FALSE)
+
+##Link
+##https://github.com/sac3tf/testrepo/commit/db38738ab0badd06863315b4b306e8220e8f4d4c
+```
+
+
+
